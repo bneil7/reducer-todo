@@ -1,24 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useReducer, useState } from 'react';
+import { initialState, reducer } from './reducers/Reducer';
+import TodoList from './components/TodoList';
+import TodoForm from './components/TodoForm';
+
 import './App.css';
 
 function App() {
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+  console.log(state);
+
+  const [newTask, changeTask] = useState('');
+
+  const handleChange = e => {
+    changeTask(e.target.value);
+  }
+
+  const completeTask = (id) => {
+    dispatch({ type: 'COMPLETE_TASK', payload: id })
+  }
+
+  const filterComplete = () => {
+    dispatch({ type: 'FILTER' })
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1> Reducer - ToDo </h1>
+      <TodoList 
+        list={state} 
+        completeTask={completeTask} 
+      />
+      <br/>
+      <button onClick={filterComplete}>CLEAR COMPLETED TODOS</button>
+      <br/>
+      <br/>
+      <TodoForm
+        input={newTask}
+        handleChange={handleChange}
+        dispatch={dispatch}
+        changeTask={changeTask}
+      />
+      
     </div>
   );
 }
